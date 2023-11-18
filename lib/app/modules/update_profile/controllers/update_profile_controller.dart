@@ -43,16 +43,34 @@ class UpdateProfileController extends GetxController {
           String ext = image!.name.split(".").last;
 
           await storageRef.child("$uid/profile.$ext").putFile(file);
+          String urlImage =
+              await storageRef.child("$uid/profile.$ext").getDownloadURL();
 
-          data.addAll({"profile": "Link url dari firebase storage"});
+          data.addAll({"profile": urlImage});
         }
         await firestore.collection("pegawai").doc(uid).update(data);
+        image = null;
         Get.snackbar("Berhasil", "Telah berhasil perbarui profil");
       } catch (e) {
         Get.snackbar("Terjadi kesalahan", "Tidak dapat perbarui profil");
       } finally {
         isLoading.value = false;
       }
+    }
+  }
+
+  void deleteProfile(String uid) async {
+    try {
+      await firestore
+          .collection("pegawai")
+          .doc(uid)
+          .update({"profile": FieldValue.delete()});
+      Get.back();
+      Get.snackbar("Berhasil", "Telah berhasil hapus gambar profil");
+    } catch (e) {
+      Get.snackbar("Tejadi kesalahan", "Tidak dapat hapus gambar profil");
+    } finally {
+      update();
     }
   }
 }

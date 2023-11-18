@@ -68,15 +68,25 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
                     );
                   } else {
                     if (user["profile"] != null) {
-                      return ClipOval(
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          child: Image.network(
-                            user["profile"],
-                            fit: BoxFit.cover,
+                      return Column(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              child: Image.network(
+                                user["profile"],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          TextButton(
+                            onPressed: () {
+                              controller.deleteProfile(user["uid"]);
+                            },
+                            child: Text("delete"),
+                          ),
+                        ],
                       );
                     } else {
                       return Text("Tidak ada gambar");
